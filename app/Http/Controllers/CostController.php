@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BazarCost;
 use App\Models\Meal;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Models\BazarCost;
 
-class MealController extends Controller
+class CostController extends Controller
 {
 
     public function index(Request $request)
@@ -20,12 +20,12 @@ class MealController extends Controller
         $month = $request->input('month', now()->format('m'));
         $year = $request->input('year', now()->format('Y'));
 
-        $meals = Meal::with('user')
-            ->whereYear('meal_date', $year)
-            ->whereMonth('meal_date', $month)
+        $costs = BazarCost::with('user')
+            ->whereYear('cost_date', $year)
+            ->whereMonth('cost_date', $month)
             ->get();
 
-        return view('meals.index', compact('users', 'meals', 'month', 'year'));
+        return view('cost.index', compact('users', 'costs', 'month', 'year'));
     }
 
     // Function to input meals
@@ -34,17 +34,20 @@ class MealController extends Controller
 
         $request->validate([
             'user_id' => 'required|exists:users,id',
-            'meal_count' => 'required|integer',
-            'meal_date' => 'required|date',
+            'cost_date' => 'required|date',
+            'title' => 'required',
+            'cost' => 'required|integer',
         ]);
 
-        Meal::create([
+        BazarCost::create([
             'user_id' => $request->user_id,
-            'meal_count' => $request->meal_count,
-            'meal_date' => $request->meal_date,
+            'cost_date' => $request->cost_date,
+            'title' => $request->title,
+            'cost' => $request->cost,
+
         ]);
 
-        return back()->with('success', 'Meal added successfully.');
+        return back()->with('success', 'Cost added successfully.');
     }
 
     // Display total meals for each user for a month
@@ -55,13 +58,13 @@ class MealController extends Controller
         $year = $request->input('year', now()->format('Y'));
 
         // Query to get total meals for each user within the given month and year
-        $userWiseTotalMeals = Meal::select('user_id', DB::raw('SUM(meal_count) as total_meals'))
-            ->whereYear('meal_date', $year)
-            ->whereMonth('meal_date', $month)
+        $totals = BazarCost::select('user_id', DB::raw('SUM(cost) as total_cost'))
+            ->whereYear('cost_date', $year)
+            ->whereMonth('cost_date', $month)
             ->groupBy('user_id')
             ->with('user') // Eager load the user relationship
             ->get();
-
+        
         // Calculate the sum of total meals for all users for the month
         $overallTotalMeals = Meal::whereYear('meal_date', $year)
             ->whereMonth('meal_date', $month)
@@ -79,6 +82,6 @@ class MealController extends Controller
             $mealRate = 0; // Set to 0 or handle the case when there are no meals
         }
 
-        return view('meals.monthly_total', compact('userWiseTotalMeals', 'overallTotalMeals', 'month', 'year', 'mealRate'));
+        return view('cost.monthly_total', compact('totals', 'overallTotalCost', 'overallTotalMeals','mealRate', 'month', 'year'));
     }
 }

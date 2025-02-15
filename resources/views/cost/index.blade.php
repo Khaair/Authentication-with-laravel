@@ -5,10 +5,10 @@
 <div class="container mt-5">
     <div class="card">
         <div class="card-header pt-5 pb-5">
-            <h3>Meal List</h3>
+            <h3>Bazar Cost List</h3>
             <!-- Add Meal Button -->
             <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addMealModal">
-                Add Meal
+                Add Cost
             </button>
         </div>
 
@@ -31,16 +31,18 @@
                 <thead class="bg-primary p-3">
                     <tr>
                         <th class="p-3 font-weight-bold">Name</th>
+                        <th class="p-3 font-weight-bold">Title</th>
                         <th class="p-3 font-weight-bold" scope="col">Date</th>
-                        <th class="p-3 font-weight-bold" scope="col">Meal</th>
+                        <th class="p-3 font-weight-bold" scope="col">Amount</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($meals as $item)
+                    @foreach($costs as $item)
                     <tr>
                         <td class="p-3">{{ $item->user->name }}</td>
-                        <td class="p-3">{{ $item->meal_date }}</td>
-                        <td class="p-3">{{ $item->meal_count }}</td>
+                        <td class="p-3">{{ $item->title }}</td>
+                        <td class="p-3">{{ $item->cost_date }}</td>
+                        <td class="p-3">{{ $item->cost }}</td>
                     </tr>
                     @endforeach
                 </tbody>
@@ -54,11 +56,11 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="addMealModalLabel">Add Meal</h5>
+                <h5 class="modal-title" id="addMealModalLabel">Add Cost</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <form action="{{ route('meals.store') }}" method="POST">
+                <form action="{{ route('cost.store') }}" method="POST">
                     @csrf
                     <div class="form-group mb-3">
                         <label for="user_id" class="form-label">User:</label>
@@ -74,22 +76,30 @@
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="meal_date" class="form-label">Meal Date:</label>
-                        <input type="date" name="meal_date" class="form-control" value="{{ old('meal_date') }}">
-                        @error('meal_date')
+                        <label for="cost_date" class="form-label">Date:</label>
+                        <input type="date" name="cost_date" class="form-control" value="{{ old('cost_date') }}">
+                        @error('cost_date')
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
 
                     <div class="form-group mb-3">
-                        <label for="meal_count" class="form-label">Meal Count:</label>
-                        <input type="number" name="meal_count" class="form-control" placeholder="Enter meal" value="{{ old('meal_count') }}">
-                        @error('meal_count')
+                        <label for="title" class="form-label">Title:</label>
+                        <input type="text" name="title" class="form-control" placeholder="Enter meal" value="{{ old('title') }}">
+                        @error('title')
                         <div class="text-danger">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <button type="submit" class="btn btn-primary">Add Meal</button>
+                    <div class="form-group mb-3">
+                        <label for="cost" class="form-label">Cost Amount:</label>
+                        <input type="number" name="cost" class="form-control" placeholder="Enter cost amount" value="{{ old('cost') }}">
+                        @error('cost')
+                        <div class="text-danger">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">SUBMIT</button>
                 </form>
             </div>
         </div>

@@ -12,6 +12,7 @@ class CreateBazarCostsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id');
             $table->integer('cost');
+            $table->string('title')->nullable();
             $table->date('cost_date');
             $table->timestamps();
 

@@ -9,7 +9,7 @@ class BazarCost extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['user_id', 'cost', 'cost_date'];
+    protected $fillable = ['user_id', 'cost', 'cost_date','title'];
 
     public function user()
     {
